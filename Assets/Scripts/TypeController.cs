@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,6 +19,8 @@ public class TypeController : MonoBehaviour
     public AudioSource mkSource;
     public Dictionary<string, string> macroDict = new Dictionary<string, string>();
 
+    public int tabCount =0;
+    public string tabTempString = string.Empty;
 
     public DirGenerator dirGenerator;
     public GameObject playerPrefab;
@@ -29,7 +32,55 @@ public class TypeController : MonoBehaviour
     inputField.onEndEdit.AddListener(delegate {GetInputEnter();});
     inputField.Select();
    }
-   void GetInputEnter(){
+
+   void Update(){
+    if(Input.GetKeyDown(KeyCode.Tab))
+    {
+        string currentText = inputField.text;
+        string newtext;
+        if(tabCount>0 || tabTempString.Length>0)
+        {
+            newtext = GetInputTab(tabTempString);
+        }
+        else{
+        newtext = GetInputTab(currentText);
+       
+        }
+         inputField.text = newtext;
+        inputField.caretPosition = inputField.text.Length;
+    }
+   }
+   string GetInputTab(string inputFieldText){
+    string [] currentTexts = inputFieldText.Split(' ');
+    string parsingText = currentTexts[currentTexts.Length-1];
+    if(parsingText.Length == 0)
+    {
+        return inputFieldText;
+    }
+    var filterTexts = dirGenerator.currentDirNames.Where(n=>n.StartsWith(parsingText)).ToList();
+    if(filterTexts.Count == 0)
+    {
+        return inputFieldText;
+    }
+    // if(tabCount>=filterTexts.Count-1)
+    // {
+    //     tabCount = 0;
+    // }
+    string result = filterTexts[tabCount];
+    tabTempString = inputFieldText;
+    if(filterTexts.Count-1>tabCount){
+        tabCount++;
+    }
+    else{
+        tabCount = 0;
+    }
+    currentTexts[currentTexts.Length - 1] = result;
+    return string.Join(" ", currentTexts);
+    
+    
+    
+   }
+      void GetInputEnter(){
     string currentText = inputField.text;
     Debug.Log(currentText);
     inputField.text = string.Empty;
@@ -40,6 +91,8 @@ public class TypeController : MonoBehaviour
         return;
     }
     TypeParse(currentText);
+     tabCount = 0;
+     tabTempString = string.Empty;
 
    }
 
@@ -54,11 +107,13 @@ public class TypeController : MonoBehaviour
         {
             RmDirAction(element);
         }
+       
         return;
     }
     if(macroDict.ContainsKey(typeString))
     {
         TypeParse(macroDict[typeString]);
+        
         return;
     }
     string [] typeParts = typeString.Split(' ');
@@ -66,8 +121,10 @@ public class TypeController : MonoBehaviour
     {
         string registerString = typeParts[3];
         string macroString = typeParts[1] + " " + typeParts[2];
+        
         macroDict.Add(registerString, macroString); 
         okaySource.Play();
+        
         return;
 
     }
@@ -75,6 +132,7 @@ public class TypeController : MonoBehaviour
     {
         
         Debug.Log("Invalid Command");
+       
         return;
     }
     switch(typeParts[0])
@@ -92,6 +150,7 @@ public class TypeController : MonoBehaviour
             Debug.Log("Invalid Command");
             break;
     }
+   
     return;
 
    }

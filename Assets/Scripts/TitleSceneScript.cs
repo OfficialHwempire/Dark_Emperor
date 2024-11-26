@@ -26,6 +26,17 @@ public class TitleSceneScript : MonoBehaviour
             StaticInfo.ResetStaticVariables();
             UnityEngine.SceneManagement.SceneManager.LoadScene("MainScene");
         }
+        else if (currentText.StartsWith("cd game phase"))
+    {
+        string phaseString = currentText.Substring("cd game phase".Length).Trim();
+        if (int.TryParse(phaseString, out int phase))
+        {
+            StaticInfo.ResetStaticVariables();
+            StaticInfo.phase = phase;
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MainScene");
+        }
+    }
+
         else if(currentText == "cd ..")
         {
             Application.Quit();

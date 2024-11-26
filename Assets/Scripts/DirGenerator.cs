@@ -7,6 +7,8 @@ public class DirGenerator:MonoBehaviour
 {
   public List<string> dirNames = new List<string>();
 
+  public List<string> seenDirNames = new List<string>();
+
  public List<string> currentDirNames = new List<string>();    
  public Dictionary<string,GameObject> currentDirs = new Dictionary<string, GameObject>();
  public Dictionary<string,GameObject> currentPreDirs = new Dictionary<string, GameObject>();
@@ -46,6 +48,10 @@ public class DirGenerator:MonoBehaviour
      dirManager.SetName(randomName );
       currentDirNames.Add(randomName);
         currentDirs.Add(randomName, newDir);
+        if(!seenDirNames.Contains(randomName))
+      {
+        seenDirNames.Add(randomName);
+      }
       StaticInfo.currentDirCount ++;
 
     }
@@ -69,6 +75,10 @@ public class DirGenerator:MonoBehaviour
      dirManager.SetName(randomName );
       currentDirNames.Add(randomName);
         currentPreDirs.Add(randomName, newPreDir);
+      if(!seenDirNames.Contains(randomName))
+      {
+        seenDirNames.Add(randomName);
+      }
       StaticInfo.currentPreDirCount ++;
     }
 

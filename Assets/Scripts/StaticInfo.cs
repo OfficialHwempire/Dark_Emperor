@@ -46,7 +46,7 @@ public class StaticInfo:MonoBehaviour
     private int currentCallsThisFrame = 0;
 
        void Start(){
-        ResetStaticVariables();
+        // ResetStaticVariables();
         InvokeRepeating("dirCreate", 0.0f, dirCoolTime);
         InvokeRepeating("preDirCreate", 0.0f, preDirCoolTime);
        }
