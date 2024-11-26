@@ -32,7 +32,7 @@ public class TitleSceneScript : MonoBehaviour
         if (int.TryParse(phaseString, out int phase))
         {
             StaticInfo.ResetStaticVariables();
-            StaticInfo.phase = phase;
+            StaticInfo.playTime = StaticInfo.phaseTimeInterval * phase;
             UnityEngine.SceneManagement.SceneManager.LoadScene("MainScene");
         }
     }

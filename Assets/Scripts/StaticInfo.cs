@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class StaticInfo:MonoBehaviour 
 {
@@ -39,6 +40,8 @@ public class StaticInfo:MonoBehaviour
     public static float phaseTimeInterval =60.0f;
 
     public static int phase =0;
+
+    public static int previousPhase =0;
     
     
 
@@ -58,7 +61,10 @@ public class StaticInfo:MonoBehaviour
         dirGenerator.GeneratePreDir();
     }
     void Update(){
-        playTime += Time.deltaTime;
+        
+       
+         playTime += Time.deltaTime;
+    
         if(playTime>=phaseTimeInterval && playTime<phaseTimeInterval*2){
             phase =1;
         }
@@ -95,10 +101,17 @@ public class StaticInfo:MonoBehaviour
         else if(playTime>=phaseTimeInterval*10 ){
             phase =10;
         }
+        if (phase != previousPhase)
+        {
+           ChangeCoolTime(dirCoolTime,preDirCoolTime);
+            previousPhase = phase;
+            Debug.Log("Phase: " + phase);
+        }
+        
       
     }
 
-        public static void ResetStaticVariables()
+    public static void ResetStaticVariables()
     {
         playTime = 0.0f;
         dirCoolTime = 4.0f;
@@ -110,7 +123,16 @@ public class StaticInfo:MonoBehaviour
         enemyCoolTime = 10f;
     }
 
- 
+    void ChangeCoolTime(float newdirCoolTime,float newpreDirCoolTime) 
+    {
+        CancelInvoke("dirCreate");
+        CancelInvoke("preDirCreate");
+
+        
+        InvokeRepeating("dirCreate", 0.0f, newdirCoolTime);
+        InvokeRepeating("preDirCreate", 0.0f, newpreDirCoolTime);
+
+    }
 
 
 
